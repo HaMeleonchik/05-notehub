@@ -42,10 +42,11 @@ export async function createNote(taskData: NewNote) {
 
 
 export async function deleteNote(taskId: number) {
-await axios.delete(`${url}/${taskId}`, {
+const response = await axios.delete<Note>(`${url}/${taskId}`, {
         headers: {
             Authorization: `Bearer ${myKey}`,
         }
     }
     )
+    return response.data
 }

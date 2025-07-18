@@ -1,10 +1,12 @@
 import css from "./Modal.module.css"
-import NoteForm from "../NoteForm/NoteForm";
+import { createPortal } from "react-dom";
 import { useEffect } from "react";
+import type { ReactNode } from "react";
 interface ModalProps{
-    onClose: () => void
+  onClose: () => void
+  children: ReactNode;
 }
-export default function Modal({ onClose }: ModalProps) {
+export default function Modal({ onClose, children}: ModalProps) {
 
 // Escape and fix
   useEffect(() => {
@@ -29,15 +31,15 @@ export default function Modal({ onClose }: ModalProps) {
   }
 
 
-    return <div
+    return createPortal(<div
   className={css.backdrop}
   role="dialog"
       aria-modal="true"
       onClick={handleBackdropClick}
 >
-  <div className={css.modal}>
-            <NoteForm onClose={onClose} />
+      <div className={css.modal}>
+        {children}
   </div>
-</div>
+</div>, document.body)
 
 }

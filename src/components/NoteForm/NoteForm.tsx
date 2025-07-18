@@ -15,7 +15,8 @@ export default function NoteForm({ onClose }: NoteFormProps) {
   const mutation = useMutation({
     mutationFn: (taskData: NewNote) => createNote(taskData),
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["notes"]})
+      queryClient.invalidateQueries({ queryKey: ["notes"] })
+      onClose();
     }
 })
 
@@ -50,7 +51,6 @@ const OrderFormSchema = Yup.object().shape({
     content,
     tag,
 })
-    onClose()
     formikHelpers.resetForm()
     }
   
@@ -59,7 +59,7 @@ const OrderFormSchema = Yup.object().shape({
   <Form className={css.form}>
   <div className={css.formGroup}>
     <label htmlFor="title">Title</label>
-    <Field as="input" did="title" type="text" name="title" className={css.input} />
+    <Field as="input" id="title" type="text" name="title" className={css.input} />
     <ErrorMessage name="title" component="span" className={css.error} />
   </div>
 
