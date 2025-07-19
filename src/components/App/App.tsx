@@ -6,33 +6,32 @@ import Modal from "../Modal/Modal";
 import Pagination from "../Pagination/Pagination";
 import NoteForm from "../NoteForm/NoteForm";
 import { useQuery, keepPreviousData} from '@tanstack/react-query';
-import { useDebouncedCallback } from "use-debounce";
+import { useDebounce } from "use-debounce";
 import { useState } from "react";
 export default function App() {
   const [query, setQuery] = useState("")
   const [isOpenModal, setOpenModal] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  
+
+  const [debouncedSearchQuery] = useDebounce(query, 300)
+
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["notes", query, currentPage],
-    queryFn: () => fetchNotes(query, currentPage),
+    queryKey: ["notes", debouncedSearchQuery, currentPage],
+    queryFn: () => fetchNotes(debouncedSearchQuery, currentPage),
     placeholderData: keepPreviousData,
   })
   
-  // const updateSerchQuery = useDebouncedCallback(setQuery,300)
   
-  const updateSerchQuery = useDebouncedCallback(
-    (newSerchQuery:string) => {
-      setQuery(newSerchQuery)
+  const updateSerchQuery = (newSearchQuery: string) => {
+      setQuery(newSearchQuery)
       setCurrentPage(1)
-    }, 300
-  )
+    }
 
   const totalPages = data?.totalPages ?? 0;
   
   return <div className={css.app}>
 	<header className={css.toolbar}>
-      <SearchBox value={query} onSearch = { updateSerchQuery} />
+      <SearchBox value={debouncedSearchQuery} onSearch = { updateSerchQuery} />
     {totalPages > 1 && <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={setCurrentPage} />}
 		<button className={css.button} onClick={()=> setOpenModal(true)}>Create note + </button>
     </header>
