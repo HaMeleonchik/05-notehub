@@ -1,14 +1,18 @@
+import { useState } from "react"
 import css from "./SearchBox.module.css"
-import type { DebouncedState } from "use-debounce"
 
 interface SearchBoxProps{
     value: string,
-    onSearch: DebouncedState<(newSerchQuery: string) => void>
+    onSearch: (newSerchQuery: string) => void,
 }
 export default function SearchBox({ value, onSearch }: SearchBoxProps) {
   
+  const [defaultValue, setDefaultValue] = useState(value)
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  onSearch(event.target.value)
+    const NewValue = event.target.value
+    setDefaultValue(NewValue)
+    onSearch(NewValue)
 }
 
     return <>
@@ -16,10 +20,8 @@ export default function SearchBox({ value, onSearch }: SearchBoxProps) {
   className={css.input}
   type="text"
   placeholder="Search notes"
-  defaultValue={value}
+  value={defaultValue}
   onChange={handleChange}
  />
-
-
     </>
   }
